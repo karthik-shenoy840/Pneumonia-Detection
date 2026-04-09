@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Pneumonia Diagnostic Tool</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 20px;">
+                <h1 style="margin: 0;">AI Medical Vision</h1>
+            </div>
+            <p>Pneumonia Detection & Analysis System</p>
+            {% if logged_in %}
+            <div class="page-links">
+                <span class="user-pill">Hello, {{ user_name }}</span>
+                <a href="/dashboard" class="btn-outline">Dashboard</a>
+                <a href="/history" class="btn-outline">History</a>
+                <a href="/profile" class="btn-outline">Profile</a>
+                <a href="/model" class="btn-outline">Model</a>
+                <a href="/logout" class="btn-outline">Logout</a>
+            </div>
+            {% else %}
+            <div class="page-links">
+                <a href="/login" class="btn-outline">Login</a>
+                <a href="/register" class="btn-outline">Register</a>
+            </div>
+            {% endif %}
+        </header>
+
+        <main class="card">
+            {% if message %}
+            <div class="form-message">{{ message }}</div>
+            {% endif %}
+
+            {% if logged_in %}
+            <form action="/predict" method="post" enctype="multipart/form-data">
+                <div class="upload-area" id="upload-area">
+                    <input type="file" name="file" id="file-input" accept="image/*" required hidden>
+                    <label for="file-input" class="upload-label">
+                        <div class="icon">📁</div>
+                        <span>Click to upload Chest X-Ray</span>
+                    </label>
+                </div>
+                
+                <p id="file-name" style="margin-top: 10px; font-size: 0.9rem; color: #666;"></p>
+                
+                <button type="submit" class="btn-primary">Start Analysis</button>
+            </form>
+            {% else %}
+            <div class="info-box">
+                <p>To upload an X-ray image and receive a diagnosis, please login or register first.</p>
+                <div class="page-links">
+                    <a href="/login" class="btn-primary">Login</a>
+                    <a href="/register" class="btn-outline">Register</a>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if prediction %}
+            <div class="result-section">
+                <hr>
+                <h3>Analysis Results</h3>
+                <div class="status-badge {{ 'positive' if prediction == 'PNEUMONIA' else 'negative' }}">
+                    {{ prediction }}
+                </div>
+                <p class="disclaimer">Note: This is an AI-generated result. Please consult a radiologist for a formal diagnosis.</p>
+            </div>
+            {% endif %}
+        </main>
+    </div>
+
+    <script>
+        // Simple script to show the filename when selected
+        const fileInput = document.getElementById('file-input');
+        if (fileInput) {
+            fileInput.onchange = function() {
+                document.getElementById('file-name').innerHTML = "Selected: " + this.files[0].name;
+            };
+        }
+    </script>
+</body>
+</html>

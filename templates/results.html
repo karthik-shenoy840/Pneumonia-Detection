@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result - AI Pneumonia Diagnostic Tool</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 20px;">
+                <h1 style="margin: 0;">Latest Result</h1>
+
+            </div>
+            <p>Here is your most recent scan prediction.</p>
+            <div class="page-links">
+                <a href="/" class="btn-outline">Upload</a>
+                <a href="/dashboard" class="btn-outline">Dashboard</a>
+                <a href="/history" class="btn-outline">History</a>
+                <a href="/profile" class="btn-outline">Profile</a>
+                <a href="/logout" class="btn-outline">Logout</a>
+            </div>
+        </header>
+
+        <main class="card result-card">
+            {% if latest %}
+            <div class="result-panel">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+                    <div>
+                        <p><strong>Date:</strong> {{ latest.date }}</p>
+                        <p><strong>Image:</strong> {{ latest.image }}</p>
+                        <p><strong>Prediction:</strong> <span class="status-badge {{ 'positive' if latest.prediction == 'PNEUMONIA' else 'negative' }}">{{ latest.prediction }}</span></p>
+                    </div>
+                    <div>
+                        <p><strong>Confidence:</strong> {{ "%.1f"|format(latest.get('confidence_score', 0) * 100) }}%</p>
+                        <p><strong>Severity Level:</strong>
+                            <span style="color: {% if latest.get('severity') == 'Mild' %}#16a34a{% elif latest.get('severity') == 'Moderate' %}#ca8a04{% else %}#dc2626{% endif %}; font-weight: bold;">
+                                {{ latest.get('severity', 'N/A') }}
+                            </span>
+                        </p>
+                        <p><strong>Risk Score:</strong>
+                            <span style="color: {% if latest.get('risk_assessment', {}).get('level') == 'Low' %}#16a34a{% elif latest.get('risk_assessment', {}).get('level') == 'Medium' %}#ca8a04{% else %}#dc2626{% endif %}; font-weight: bold;">
+                                {{ latest.get('risk_assessment', {}).get('score', 0) }}% ({{ latest.get('risk_assessment', {}).get('level', 'N/A') }})
+                            </span>
+                        </p>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: #0f172a; margin-bottom: 15px;">Medical Recommendations</h3>
+                    <div style="background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div>
+                                <h4 style="color: #2563eb; margin: 0 0 10px 0;">Primary Action</h4>
+                                <p style="margin: 0; color: #374151;">{{ latest.get('recommendations', {}).get('primary_action', 'Consult healthcare provider') }}</p>
+                            </div>
+                            <div>
+                                <h4 style="color: #2563eb; margin: 0 0 10px 0;">Specialist Consultation</h4>
+                                <p style="margin: 0; color: #374151;">{{ latest.get('recommendations', {}).get('specialist', 'Consult healthcare provider') }}</p>
+                            </div>
+                            <div>
+                                <h4 style="color: #2563eb; margin: 0 0 10px 0;">Follow-up Care</h4>
+                                <p style="margin: 0; color: #374151;">{{ latest.get('recommendations', {}).get('follow_up', 'Follow medical advice') }}</p>
+                            </div>
+                            <div>
+                                <h4 style="color: #2563eb; margin: 0 0 10px 0;">Lifestyle & Care</h4>
+                                <p style="margin: 0; color: #374151;">{{ latest.get('recommendations', {}).get('lifestyle', 'Maintain healthy lifestyle') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-section">
+                    <a href="/download-pdf" class="btn-primary" style="display: inline-flex; margin-top: 20px; padding: 12px 24px;">Download Detailed Medical Report (PDF)</a>
+                </div>
+            </div>
+            {% else %}
+            <div class="info-box">
+                <p>No results are available yet. Upload a chest X-ray image first.</p>
+            </div>
+            {% endif %}
+        </main>
+    </div>
+
+    <script>
+    </script>
+</body>
+</html>

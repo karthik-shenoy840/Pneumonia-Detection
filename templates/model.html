@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Info - AI Pneumonia Diagnostic Tool</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 20px;">
+                <h1 style="margin: 0;">Model Information</h1>
+            </div>
+            <p>Learn how the pneumonia prediction model works and what it was trained to do.</p>
+            <div class="page-links">
+                <a href="/" class="btn-outline">Upload</a>
+                <a href="/dashboard" class="btn-outline">Dashboard</a>
+                <a href="/history" class="btn-outline">History</a>
+                <a href="/profile" class="btn-outline">Profile</a>
+                <a href="/logout" class="btn-outline">Logout</a>
+            </div>
+        </header>
+
+        <main class="card">
+            <div class="model-card">
+                <h2>{{ model_info.name }}</h2>
+                <p>{{ model_info.description }}</p>
+                <div class="model-details">
+                    <div><strong>Architecture:</strong> {{ model_info.architecture }}</div>
+                    <div><strong>Input shape:</strong> {{ model_info.input_shape }}</div>
+                    <div><strong>Output:</strong> {{ model_info.output }}</div>
+                    <div><strong>Training:</strong> {{ model_info.training_epochs }}</div>
+                    <div><strong>Accuracy:</strong> {{ model_info.accuracy }}</div>
+                    <div><strong>Loss:</strong> {{ model_info.loss }}</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+    </script>
+</body>
+</html>

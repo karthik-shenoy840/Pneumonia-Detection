@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - AI Pneumonia Diagnostic Tool</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 20px;">
+                <h1 style="margin: 0;">Dashboard</h1>
+            </div>
+            <p>Welcome back, {{ user_name }}. Here is your latest scan summary and quick access to your history.</p>
+            <div class="page-links">
+                <a href="/" class="btn-outline">Upload</a>
+                <a href="/history" class="btn-outline">History</a>
+                <a href="/profile" class="btn-outline">Profile</a>
+                <a href="/model" class="btn-outline">Model Info</a>
+                <a href="/logout" class="btn-outline">Logout</a>
+            </div>
+        </header>
+
+        <main class="card dashboard-card">
+            <div class="dashboard-grid">
+                <div class="summary-card">
+                    <h2>Scan Summary</h2>
+                    <div class="stats-row">
+                        <div class="stat-box">
+                            <span>Total scans</span>
+                            <strong>{{ total_scans }}</strong>
+                        </div>
+                        <div class="stat-box positive-box">
+                            <span>Normal</span>
+                            <strong>{{ normal_count }}</strong>
+                        </div>
+                        <div class="stat-box danger-box">
+                            <span>Pneumonia</span>
+                            <strong>{{ pneumonia_count }}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-card">
+                    <h2>Quick Actions</h2>
+                    <a href="/" class="btn-primary btn-block">Upload New Image</a>
+                    <a href="/history" class="btn-outline btn-block">View History</a>
+                    <a href="/model" class="btn-outline btn-block">Model Details</a>
+                </div>
+            </div>
+
+            <div class="recent-section">
+                <h3>Most recent result</h3>
+                {% if recent %}
+                <div class="result-panel">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                        <div>
+                            <p><strong>Date:</strong> {{ recent.date }}</p>
+                            <p><strong>Image:</strong> {{ recent.image }}</p>
+                            <p><strong>Prediction:</strong> <span class="status-badge {{ 'positive' if recent.prediction == 'PNEUMONIA' else 'negative' }}">{{ recent.prediction }}</span></p>
+                        </div>
+                        <div>
+                            <p><strong>Confidence:</strong> {{ "%.1f"|format(recent.get('confidence_score', 0) * 100) }}%</p>
+                            <p><strong>Severity:</strong>
+                                <span style="color: {% if recent.get('severity') == 'Mild' %}#16a34a{% elif recent.get('severity') == 'Moderate' %}#ca8a04{% else %}#dc2626{% endif %}; font-weight: bold;">
+                                    {{ recent.get('severity', 'N/A') }}
+                                </span>
+                            </p>
+                            <p><strong>Risk Level:</strong>
+                                <span style="color: {% if recent.get('risk_assessment', {}).get('level') == 'Low' %}#16a34a{% elif recent.get('risk_assessment', {}).get('level') == 'Medium' %}#ca8a04{% else %}#dc2626{% endif %}; font-weight: bold;">
+                                    {{ recent.get('risk_assessment', {}).get('level', 'N/A') }}
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px; padding: 12px; background: #f8fafc; border-radius: 8px; border-left: 4px solid #2563eb;">
+                        <p style="margin: 0; font-size: 0.9rem;"><strong>Recommendation:</strong> {{ recent.get('recommendations', {}).get('primary_action', 'Consult healthcare provider') }}</p>
+                    </div>
+                </div>
+                {% else %}
+                <p>No scan results yet. Upload an X-ray to get started.</p>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+
+    <script>
+    </script>
+</body>
+</html>
